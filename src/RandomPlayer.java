@@ -31,7 +31,15 @@ public class RandomPlayer extends Player {
     public Action secondAction(Game game) {
         ArrayList<Action> actions = getAllActions(game.getBoard());
         Random random = new Random();
-        return actions.get(random.nextInt(actions.size()));
+        while (!actions.isEmpty()) {
+            Action action = actions.get(random.nextInt(actions.size()));
+            if (action.getType() == Action.ActionType.reinforce) {
+                return action;
+            } else {
+                actions.remove(action);
+            }
+        }
+        return null;
     }
 
 

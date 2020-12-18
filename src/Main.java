@@ -5,7 +5,8 @@ import models.PlayerType;
 public class Main {
 
     public static void main(String[] args) {
-        RandomPlayer whitePlayer = new RandomPlayer(PlayerType.white);
+        // RandomPlayer whitePlayer = new RandomPlayer(PlayerType.white);
+        WarriorZ whitePlayer = new WarriorZ(PlayerType.white);
         Ai blackPlayer = new Ai(PlayerType.black);
         Game game = new Game(whitePlayer, blackPlayer);
         Player player = game.play();

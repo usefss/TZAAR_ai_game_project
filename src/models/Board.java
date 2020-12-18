@@ -268,7 +268,7 @@ public class Board {
         }
     }
 
-    void printComplete() {
+    public void printComplete() {
         for (int i = 0; i < totalRowsCount; i++) {
             printPlayer(i);
             printType(i);

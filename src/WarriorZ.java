@@ -1,3 +1,4 @@
+import models.Board;
 import models.Action;
 import models.Game;
 import models.Player;
@@ -66,8 +67,31 @@ public class WarriorZ extends Player {
         return bestAction;
     }
 
+    private int eval_beads(Game game, Player player) {
+        int A = 0, B = 0, C = 0;
+        for (int row_c = 0; row_c < game.getBoard().getRows().length; row_c ++) {
+            Board.BoardRow row = game.getBoard().getRows()[row_c];
+            for (int cell_c = 0; cell_c < row.boardCells.length; cell_c ++) {
+                Board.BoardCell cell = row.boardCells[cell_c];
+                if (cell.bead != null) {
+                    if (cell.bead.getPlayer().getType() == player.getType()) {
+                        switch (cell.bead.getType()) {
+                            case Tzaars -> A ++;
+                            case Tzarras -> B ++;
+                            case Totts -> C ++;
+                        }
+                    }
+                }
+            }
+        }
+        return A * B * C;
+    }
+
     private int eval(Game game) {
-        return 0;
+        int E_val = 0;
+        E_val = E_val + eval_beads(game, this);
+        E_val = E_val - eval_beads(game, getOpp(game));
+        return E_val;
     }
 
     @Override
@@ -101,7 +125,6 @@ public class WarriorZ extends Player {
         if (depth == maxDepth) {
             return eval(game);
         }
-
         int maxValue = Integer.MIN_VALUE;
         ArrayList<Action> actions = getAllActions(game.getBoard());
         for (Action action : actions) {
@@ -127,7 +150,6 @@ public class WarriorZ extends Player {
         if (depth == maxDepth) {
             return eval(game);
         }
-
         int maxValue = Integer.MIN_VALUE;
         ArrayList<Action> actions = getAllActions(game.getBoard());
         for (Action action : actions) {
@@ -139,7 +161,7 @@ public class WarriorZ extends Player {
             if (winner != null) {
                 if (winner.getType() == getType()) {
                     return Integer.MAX_VALUE;
-                }else {
+                } else {
                     return Integer.MIN_VALUE;
                 }
             } else {
@@ -153,13 +175,13 @@ public class WarriorZ extends Player {
         if (depth == maxDepth) {
             return eval(game);
         }
-
+        Player opp = getOpp(game);
         int minValue = Integer.MAX_VALUE;
-        ArrayList<Action> actions = getAllActions(game.getBoard());
+        ArrayList<Action> actions = opp.getAllActions(game.getBoard());
         for (Action action : actions) {
             if (action.getType() == Action.ActionType.attack) {
                 Game copyGame = game.copy();
-                if (copyGame.applyActionTwo(this, action, true)) {
+                if (copyGame.applyActionTwo(opp, action, true)) {
                     continue;
                 }
                 Player winner = copyGame.getWinner();
@@ -181,18 +203,19 @@ public class WarriorZ extends Player {
             return eval(game);
         }
 
+        Player opp = getOpp(game);
         int minValue = Integer.MAX_VALUE;
-        ArrayList<Action> actions = getAllActions(game.getBoard());
+        ArrayList<Action> actions = opp.getAllActions(game.getBoard());
         for (Action action : actions) {
             Game copyGame = game.copy();
-            if (copyGame.applyActionTwo(this, action, false)) {
+            if (copyGame.applyActionTwo(opp, action, false)) {
                 continue;
             }
             Player winner = copyGame.getWinner();
             if (winner != null) {
                 if (winner.getType() == getType().reverse()) {
                     return Integer.MIN_VALUE;
-                }else {
+                } else {
                     return Integer.MAX_VALUE;
                 }
             } else {
@@ -202,4 +225,13 @@ public class WarriorZ extends Player {
 
         return minValue;
     }
+
+    public Player getOpp(Game game) {
+        if (getType() == PlayerType.white) {
+            return game.getBlack();
+        } else {
+            return game.getWhite();
+        }
+    }
+
 }

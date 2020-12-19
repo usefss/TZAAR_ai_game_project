@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class WarriorZ extends Player {
 
     private int doneActions = 0;
-    private final int maxDepth = 2;
+    private final int maxDepth = 3;
 
     public WarriorZ(PlayerType type) {
         super(type);
@@ -33,7 +33,7 @@ public class WarriorZ extends Player {
                             return action;
                         }
                     } else {
-                        int temp = Math.max(maxValue, minForceAttack(copyGame, 0));
+                        int temp = Math.max(maxValue, minForceAttack(copyGame, 0, Integer.MIN_VALUE, Integer.MAX_VALUE));
                         if (temp > maxValue) {
                             maxValue = temp;
                             bestAction = action;
@@ -54,7 +54,7 @@ public class WarriorZ extends Player {
                             return action;
                         }
                     } else {
-                        int temp = Math.max(maxValue, maxSecondMove(copyGame, 0));
+                        int temp = Math.max(maxValue, maxSecondMove(copyGame, 0, Integer.MIN_VALUE, Integer.MAX_VALUE));
                         if (temp > maxValue) {
                             maxValue = temp;
                             bestAction = action;
@@ -110,7 +110,7 @@ public class WarriorZ extends Player {
                     return action;
                 }
             } else {
-                int temp = Math.max(maxValue, minForceAttack(copyGame, 0));
+                int temp = Math.max(maxValue, minForceAttack(copyGame, 0, Integer.MIN_VALUE, Integer.MAX_VALUE));
                 if (temp > maxValue) {
                     maxValue = temp;
                     bestAction = action;
@@ -121,7 +121,7 @@ public class WarriorZ extends Player {
         return bestAction;
     }
 
-    private int maxForceAttack(Game game, int depth) {
+    private int maxForceAttack(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
             return eval(game);
         }
@@ -139,14 +139,19 @@ public class WarriorZ extends Player {
                         return Integer.MAX_VALUE;
                     }
                 } else {
-                    maxValue = Math.max(maxValue, maxSecondMove(copyGame, depth + 1));
+                    maxValue = Math.max(maxValue, maxSecondMove(copyGame, depth + 1, alpha, betha));
+                    alpha = Math.max(maxValue, alpha);
+                    if (betha <= alpha) {
+                        // System.out.println("pruned");
+                        break;
+                    }
                 }
             }
         }
         return maxValue;
     }
 
-    private int maxSecondMove(Game game, int depth) {
+    private int maxSecondMove(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
             return eval(game);
         }
@@ -165,13 +170,18 @@ public class WarriorZ extends Player {
                     return Integer.MIN_VALUE;
                 }
             } else {
-                maxValue = Math.max(maxValue, minForceAttack(copyGame, depth + 1));
+                maxValue = Math.max(maxValue, minForceAttack(copyGame, depth + 1, alpha, betha));
+                alpha = Math.max(maxValue, alpha);
+                if (betha <= alpha) {
+                    // System.out.println("pruned");
+                    break;
+                }
             }
         }
         return maxValue;
     }
 
-    private int minForceAttack(Game game, int depth) {
+    private int minForceAttack(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
             return eval(game);
         }
@@ -190,7 +200,12 @@ public class WarriorZ extends Player {
                         return Integer.MIN_VALUE;
                     }
                 } else {
-                    minValue = Math.min(minValue, minSecondMove(copyGame, depth + 1));
+                    minValue = Math.min(minValue, minSecondMove(copyGame, depth + 1, alpha, betha));
+                    betha = Math.min(minValue, betha);
+                    if (betha <= alpha) {
+                        // System.out.println("pruned");
+                        break;
+                    }
                 }
             }
         }
@@ -198,7 +213,7 @@ public class WarriorZ extends Player {
 
     }
 
-    private int minSecondMove(Game game, int depth) {
+    private int minSecondMove(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
             return eval(game);
         }
@@ -219,7 +234,12 @@ public class WarriorZ extends Player {
                     return Integer.MAX_VALUE;
                 }
             } else {
-                minValue = Math.min(minValue, maxForceAttack(copyGame, depth + 1));
+                minValue = Math.min(minValue, maxForceAttack(copyGame, depth + 1, alpha, betha));
+                betha = Math.min(minValue, betha);
+                if (betha <= alpha) {
+                    // System.out.println("pruned");
+                    break;
+                }
             }
         }
 

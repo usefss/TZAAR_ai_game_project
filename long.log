@@ -1,0 +1,11 @@
+Action{type=attack, start=BoardCell{row=2, col=1, bead=Bead{type=Tzarras, player=Player{type=white}, height=1}}, target=BoardCell{row=2, col=2, bead=Bead{type=Tzaars, player=Player{type=black}, height=1}}}
+    B B B B W         C C C C C         1 1 1 1 1      
+   W B B B W W       C B B B B C       1 1 1 1 1 1     
+  W X W B W W W     C X B A A B C     1 X 1 1 1 1 1    
+ W W W B W W W W   C B A C C A B C   1 1 1 1 1 1 1 1   
+W W W W X B B B B C B A C X C A B C 1 1 1 1 X 1 1 1 1  
+ B B B B W B B B   C B A C C A B C   1 1 1 1 1 1 1 1   
+  B B B W W B B     C B A A A B C     1 1 1 1 1 1 1    
+   B B W W W B       C B B B B C       1 1 1 1 1 1     
+    B W W W W         C C C C C         1 1 1 1 1      
+ 

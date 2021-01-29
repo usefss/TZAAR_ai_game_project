@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Ai extends Player {
 
     private int doneActions = 0;
-    private final int maxDepth = 3;
+    private final int maxDepth = 2;
 
     public Ai(PlayerType type) {
         super(type);

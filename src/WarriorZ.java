@@ -5,7 +5,7 @@ import models.Player;
 import models.PlayerType;
 
 import java.util.ArrayList;
-import java.util.Arrays; 
+// import java.util.Arrays; 
 import java.util.List; 
 
 public class WarriorZ extends Player {
@@ -74,7 +74,7 @@ public class WarriorZ extends Player {
         return bestAction;
     }
 
-    private int eval_beads(Game game, Player player) {
+    private int eval_beads(Game game, Player player, String bead_type) {
         int A = 0, B = 0, C = 0;
         for (int row_c = 0; row_c < game.getBoard().getRows().length; row_c ++) {
             Board.BoardRow row = game.getBoard().getRows()[row_c];
@@ -91,16 +91,50 @@ public class WarriorZ extends Player {
                 }
             }
         }
-        return A * B * C;
+        if (bead_type == "A")
+            return A;
+        else if (bead_type == "B")
+            return B;
+        else if (bead_type == "C") 
+            return C;
+        else
+            return 0;
     }
 
-    private int eval(Game game) {
+    private int get_action_count(Game game, String turn) {
+        int min = 0;
+        int max = 0;
+        ArrayList<Action> actions = getAllActions(game.getBoard());
+
+        for (Action action : actions) {
+            if (action.getStart().bead.getPlayer().getType() != getType()) 
+                max = max + 1;
+            else
+                min = min + 1;
+        }
+
+        if (turn == "min")
+            return min;
+        else
+            return max;
+    }
+
+
+    private int eval(Game game, int depth) {
         int E_val = 0;
-        E_val = E_val + eval_beads(game, this);
-        E_val = E_val - eval_beads(game, getOpp(game));
+        E_val = E_val + vars.get(0) * eval_beads(game, this, "A");
+        E_val = E_val + vars.get(1) * eval_beads(game, this, "B");
+        E_val = E_val + vars.get(2) * eval_beads(game, this, "C");
+        E_val = E_val + vars.get(3) * eval_beads(game, getOpp(game), "A");
+        E_val = E_val + vars.get(4) * eval_beads(game, getOpp(game), "B");
+        E_val = E_val + vars.get(5) * eval_beads(game, getOpp(game), "C");
+
+        E_val = E_val + vars.get(6) * depth;
+        E_val = E_val + vars.get(7) * get_action_count(game, "max");
+        E_val = E_val + vars.get(8) * get_action_count(game, "min");
+
         return E_val;
     }
-
     @Override
     public Action secondAction(Game game) {
         int maxValue = Integer.MIN_VALUE;
@@ -130,7 +164,7 @@ public class WarriorZ extends Player {
 
     private int maxForceAttack(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
-            return eval(game);
+            return eval(game, depth);
         }
         int maxValue = Integer.MIN_VALUE;
         ArrayList<Action> actions = getAllActions(game.getBoard());
@@ -160,7 +194,7 @@ public class WarriorZ extends Player {
 
     private int maxSecondMove(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
-            return eval(game);
+            return eval(game, depth);
         }
         int maxValue = Integer.MIN_VALUE;
         ArrayList<Action> actions = getAllActions(game.getBoard());
@@ -190,7 +224,7 @@ public class WarriorZ extends Player {
 
     private int minForceAttack(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
-            return eval(game);
+            return eval(game, depth);
         }
         Player opp = getOpp(game);
         int minValue = Integer.MAX_VALUE;
@@ -222,7 +256,7 @@ public class WarriorZ extends Player {
 
     private int minSecondMove(Game game, int depth, int alpha, int betha) {
         if (depth == maxDepth) {
-            return eval(game);
+            return eval(game, depth);
         }
 
         Player opp = getOpp(game);

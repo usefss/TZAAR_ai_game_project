@@ -3,6 +3,9 @@ import models.Player;
 import models.PlayerType;
 import models.Board;
 
+import java.util.Arrays; 
+import java.util.List; 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,7 +15,7 @@ import java.io.ObjectOutputStream;
 
 public class Main {
 
-    public static void test_file() {
+    public static void save_state_to_file() {
         WarriorZ whitePlayer = new WarriorZ(PlayerType.white);
         AiDeep blackPlayer = new AiDeep(PlayerType.black);
         Game game = new Game(whitePlayer, blackPlayer);
@@ -55,9 +58,16 @@ public class Main {
         System.out.println(player.getType());
 
     }
+
+    public static void test_fit_ness() {
+        List<Integer> vars = Arrays.asList(3, 4, 12, 99, 10);
+        GaFitness fit = new GaFitness(vars);
+        fit.fitness();
+    }
+
     public static void main(String[] args) {
-        // start_game();
-        test_file();
+        // test_fit_ness();
+        start_game();
     }
 
 }

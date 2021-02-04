@@ -22,6 +22,8 @@ public class Game {
 
     public Player play() {
         Player winner;
+        System.out.println("testing board");
+        board.printComplete();
         Action action = white.forceAttack(copy());
         if (action == null) {
             return black;
@@ -34,6 +36,8 @@ public class Game {
         if (winner != null) {
             return winner;
         }
+        System.out.println("testing board");
+        board.printComplete();
         while (true) {
             action = black.forceAttack(copy());
             if (action == null) {
@@ -124,7 +128,7 @@ public class Game {
         return null;
     }
 
-    private boolean applyAction(Player player, Action action, boolean attack) {
+    public boolean applyAction(Player player, Action action, boolean attack) {
         System.out.println(action);
         if (attack) {
             if (action.getType() != Action.ActionType.attack) {

@@ -5,14 +5,21 @@ import models.Player;
 import models.PlayerType;
 
 import java.util.ArrayList;
+import java.util.Arrays; 
+import java.util.List; 
 
 public class WarriorZ extends Player {
 
     private int doneActions = 0;
     private final int maxDepth = 3;
+    private List<Integer> vars;
 
     public WarriorZ(PlayerType type) {
         super(type);
+    }
+    public WarriorZ(PlayerType type, List<Integer> vars) {
+        super(type);
+        this.vars = vars;
     }
 
     @Override

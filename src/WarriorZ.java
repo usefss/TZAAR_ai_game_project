@@ -129,7 +129,6 @@ public class WarriorZ extends Player {
         E_val = E_val + vars.get(4) * eval_beads(game, getOpp(game), "B");
         E_val = E_val + vars.get(5) * eval_beads(game, getOpp(game), "C");
 
-        E_val = E_val + vars.get(6) * depth;
         E_val = E_val + vars.get(7) * get_action_count(game, "max");
         E_val = E_val + vars.get(8) * get_action_count(game, "min");
 
